@@ -1,5 +1,7 @@
 import User from "../models/user.model.js"
+import bcrypt from "bcrypt"
 import { validateSignUpdata } from "../utility/validation.js"
+
 
 
 
@@ -19,10 +21,13 @@ const signUp = async (req, res) => {
             })
         }
 
+        const hashedPassword = await bcrypt.hash(password, 10)
+
+
         const user = await User.create({
             firstName,
             lastName,
-            password,
+            password: hashedPassword,
             emailId,
 
         })
@@ -39,7 +44,7 @@ const signUp = async (req, res) => {
     } catch (error) {
         res.status(401)
             .json({
-                message: ` ${error}`
+                message: error.message
             })
     }
 
@@ -47,5 +52,68 @@ const signUp = async (req, res) => {
 }
 
 
+const login = async (req, res) => {
 
-export { signUp }
+    const { emailId, password } = req.body
+
+    try {
+
+        if (!emailId || !password) {
+            throw new Error("All field is required")
+        }
+
+        const user = await User.findOne({ emailId })
+
+        const isPasswordValid = await user.validatePassword(password)
+
+        if (!isPasswordValid) {
+            return res
+                .status(404)
+                .json({
+                    message: "Invalid Credential",
+                    succes: false
+                })
+
+        }
+
+        if (!user) {
+            return res.
+                status(404)
+                .json({
+                    message: "User not found",
+                    succes: false
+                })
+        }
+
+        
+
+     
+
+        if(isPasswordValid){
+           const token = await user.getJwt()
+
+           res.cookie("token",token,{
+            expires: new Date(Date.now() +  8 * 3600000)
+           })
+        }
+
+        res.
+            status(201)
+            .json({
+                message: "LoggedIn sucessfully",
+                data: user
+            })
+    } catch (error) {
+        res
+            .status(401)
+            .json({
+                message: error.message,
+                succes: false
+
+            })
+    }
+
+}
+
+
+export { signUp, login }
