@@ -1,4 +1,4 @@
-import User from "../models/user.model.js"
+import User from "../models/User.model.js"
 import bcrypt from "bcrypt"
 import { validateSignUpdata } from "../utility/validation.js"
 
@@ -116,4 +116,25 @@ const login = async (req, res) => {
 }
 
 
-export { signUp, login }
+const logout = async (req,res) =>{
+
+
+      // No need to generate a new token for logout
+      res
+         .clearCookie("token", {
+            httpOnly: true,
+            
+         })
+         .status(200)
+         .json({
+            message: "Logged Out Successfully",
+            success: true
+         })
+  
+
+   
+         
+}
+
+
+export { signUp, login,logout }
