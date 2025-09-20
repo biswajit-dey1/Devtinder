@@ -7,6 +7,6 @@ const profileRoutes = express.Router()
 
 
 profileRoutes.get("/view-profile",authMiddleware,getProfile)
-profileRoutes.post("/update-profile",authMiddleware,updateProfile)
+profileRoutes.patch("/update-profile",authMiddleware,updateProfile)
 
 export default profileRoutes

@@ -4,6 +4,7 @@ import dotenv from "dotenv"
 import authRoutes from "./src/routes/auth.route.js"
 import cookieParser from "cookie-parser"
 import profilerouter from "./src/routes/profile.route.js"
+import requestRoutes from "./src/routes/request.route.js"
 
 dotenv.config()
 const app = express()
@@ -15,8 +16,8 @@ app.use(cookieParser())
 
 
 app.use("/api/v1/user",authRoutes)
-
 app.use("/api/v1/profile", profilerouter)
+app.use("/api/v1/request",requestRoutes)
 
 connectDb()
 .then(() =>{

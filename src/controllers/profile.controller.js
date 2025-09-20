@@ -47,6 +47,8 @@ const updateProfile = async (req, res) => {
       }, {
          new: true
       }
+      ).select(
+         "-password"
       )
 
       if (!updateUser) {
@@ -60,7 +62,7 @@ const updateProfile = async (req, res) => {
             data: updateUser
          })
    } catch (error) {
-      
+
       res.status(401)
       json({
          message: error.message
