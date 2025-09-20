@@ -1,3 +1,4 @@
+import { json } from "express"
 import ConnectionRequest from "../models/ConnectionRequest.model.js"
 import User from "../models/User.model.js"
 
@@ -12,6 +13,17 @@ const sendRequest = async (req, res) => {
         }
 
         const fromUserId = req.user._id
+
+        const allowedStatus = ["interested", "ignored"]
+
+        if (!allowedStatus.includes(status)) {
+
+            return res.status(404)
+                .json({
+                    message: "Invalid status type: " + status,
+                    succes: false
+                })
+        }
 
 
         const user = await User.findById(userId)
