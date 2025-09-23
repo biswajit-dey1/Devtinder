@@ -76,4 +76,65 @@ const sendRequest = async (req, res) => {
     }
 }
 
-export { sendRequest }
+const reviewRequest = async (req, res) => {
+
+    try {
+
+        const { status, requestId } = req.params
+
+        const LoggedInUser = req.user
+
+        const allowedStatus = ["accepted", "rejected"]
+
+        if (!allowedStatus.includes(status)) {
+
+            return res.status(404)
+                .json({
+                    message: `Invalid status type : ${status}`,
+                    succes: false
+                })
+        }
+
+
+        const connectionRequest = await ConnectionRequest.findOne({
+            _id: requestId,
+            toUserId: LoggedInUser._id,
+            status: "interested"
+
+        })
+
+        if (!connectionRequest) {
+        return res
+          .status(404)
+          .json({ message: "Connection request not found" });
+      }
+
+        const updatedConnectionRequest = await ConnectionRequest.findByIdAndUpdate(requestId, {
+            $set: { status }
+        }, { new: true })
+
+
+        if(!updatedConnectionRequest){
+            throw new Error("Cannot find updated Connection request")
+        }
+
+        res.status(201)
+           .json({
+            message:`Connection request ${status}`,
+            data: updatedConnectionRequest
+           })
+
+    } catch (error) {
+
+        res.status(500)
+            .json({
+                message: error.message,
+                succes: false
+            })
+    }
+
+}
+
+
+
+export { sendRequest, reviewRequest }

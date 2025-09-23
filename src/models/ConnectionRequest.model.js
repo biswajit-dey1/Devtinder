@@ -4,12 +4,14 @@ const connectionRequestSchema = new mongoose.Schema({
 
     fromUserId:{
         type: mongoose.Types.ObjectId,
-        required:true
+        required:true,
+        ref:'User'
     },
 
     toUserId: {
         type: mongoose.Types.ObjectId,
-        required:true
+        required:true,
+        ref:'User'
     },
 
     status:{
@@ -20,7 +22,7 @@ const connectionRequestSchema = new mongoose.Schema({
             message:`{VALUE} is incorrect status type`
         }
     }
-})
+},{timestamps:true})
 
     
     connectionRequestSchema.pre('save', function(next){

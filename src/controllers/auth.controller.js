@@ -32,6 +32,8 @@ const signUp = async (req, res) => {
 
         })
 
+        user.password = undefined // we dont save in db so password will there in db
+
         // await user.save() if we create user by new User()
 
         return res.status(201)
@@ -97,6 +99,8 @@ const login = async (req, res) => {
            })
         }
 
+
+        user.password = undefined
         res.
             status(201)
             .json({
