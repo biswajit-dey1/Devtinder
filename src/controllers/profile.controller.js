@@ -70,13 +70,6 @@ const updateProfile = async (req, res) => {
    }
 
 
-
-
-
-
-
-
-
 }
 
 export { getProfile, updateProfile }

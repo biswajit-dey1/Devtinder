@@ -6,12 +6,17 @@ import cookieParser from "cookie-parser"
 import profilerouter from "./src/routes/profile.route.js"
 import requestRoutes from "./src/routes/request.route.js"
 import userRoutes from "./src/routes/user.route.js"
+import cors from "cors"
 
 dotenv.config()
 const app = express()
 
 const port = 3000
 
+app.use(cors({
+  origin:"http://localhost:5173/",
+  credentials:true
+}))
 app.use(express.json())
 app.use(cookieParser())
 
