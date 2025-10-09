@@ -1,4 +1,4 @@
-import { json } from "express"
+
 import ConnectionRequest from "../models/ConnectionRequest.model.js"
 import User from "../models/User.model.js"
 
@@ -111,16 +111,18 @@ const reviewRequest = async (req, res) => {
 
         const updatedConnectionRequest = await ConnectionRequest.findByIdAndUpdate(requestId, {
             $set: { status }
-        }, { new: true })
+        }, { new: true }).populate("fromUserId", "firstName lastName photoUrl about age gender")
 
-
+        
         if(!updatedConnectionRequest){
             throw new Error("Cannot find updated Connection request")
         }
+       
 
-        res.status(201)
+       return res.status(201)
            .json({
             message:`Connection request ${status}`,
+            requestId:requestId,
             data: updatedConnectionRequest
            })
 

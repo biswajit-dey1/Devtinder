@@ -7,37 +7,43 @@ const receivedRequest = async (req, res) => {
 
         const loggedInUser = req.user
 
-        const allRequest = await ConnectionRequest.find({
+        const connectionRequest = await ConnectionRequest.find({
             toUserId: loggedInUser._id,
             status: "interested"
-        }).populate("fromUserId", "firstName lastName photoUrl about age")
+        }).populate("fromUserId", "firstName lastName photoUrl about age gender")
 
-        const pendingRequest = allRequest.map(request => request.fromUserId)
+        if(!connectionRequest) {
+             return res.status(404).json({
+                message: "No requests found",
+                success: false
+            });
+        }
 
-        if (pendingRequest.length < 1) {
-            res.status(200)
+
+       
+
+        if (connectionRequest.length < 1) {
+           return res.status(200)
                 .json({
                     message: "You have no pending request",
                     success: true,
-                    pendingRequest
+                    connectionRequest
 
                 })
         }
 
-        res.status(202)
+       return res.status(202)
             .json({
                 message: "Pending connection requests retrieved successfully",
                 success: true,
-                totalPendingRequest: pendingRequest.length,
-                pendingRequest: pendingRequest
+                totalPendingRequest: connectionRequest.length,
+                pendingRequest: connectionRequest
             })
 
 
 
-
-
     } catch (error) {
-        res.status(501)
+       return res.status(501)
             .json({
                 message: error.message
             })
@@ -62,8 +68,8 @@ const connections = async (req, res) => {
                     status: "accepted"
                 }
             ]
-        }).populate("toUserId", "firstName lastName photoUrl about age")
-            .populate("fromUserId", "firstName lastName photoUrl about age")
+        }).populate("toUserId", "firstName lastName photoUrl about age gender")
+            .populate("fromUserId", "firstName lastName photoUrl about age gender")
 
 
 
