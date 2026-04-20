@@ -59,6 +59,16 @@ const userSchema = new mongoose.Schema({
     type: [String]
   }
 
+  ,
+  role: {
+    type: String,
+    enum: {
+      values: ["user", "admin", "moderator"],
+      message: "{VALUE} is not a valid role"
+    },
+    default: "user"
+  }
+
 
 },{timestamps:true})
 
@@ -72,10 +82,16 @@ userSchema.methods.validatePassword = async function (passwordInputUser) {
 
 userSchema.methods.getJwt = async function () {
   const user = this
-  
-  const token = jwt.sign({_id: user._id},
-      "RS256",
-    {expiresIn:"7d"})
+  const secret = process.env.JWT_SECRET
+  if (!secret) {
+    throw new Error("JWT_SECRET is required")
+  }
+
+  const token = jwt.sign(
+    { _id: user._id, role: user.role },
+    secret,
+    { expiresIn: "7d" }
+  )
 
     return token
 

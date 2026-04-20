@@ -6,6 +6,7 @@ import cookieParser from "cookie-parser"
 import profilerouter from "./src/routes/profile.route.js"
 import requestRoutes from "./src/routes/request.route.js"
 import userRoutes from "./src/routes/user.route.js"
+import adminRoutes from "./src/routes/admin.route.js"
 import cors from "cors"
 
 dotenv.config()
@@ -25,6 +26,7 @@ app.use("/api/v1/auth",authRoutes)
 app.use("/api/v1/profile", profilerouter)
 app.use("/api/v1/request",requestRoutes)
 app.use("/api/v1/user",userRoutes)
+app.use("/api/v1/admin", adminRoutes)
 
 connectDb()
 .then(() =>{

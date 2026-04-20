@@ -27,7 +27,7 @@ const receivedRequest = async (req, res) => {
                 .json({
                     message: "You have no pending request",
                     success: true,
-                    connectionRequest
+                    pendingRequest:connectionRequest
 
                 })
         }

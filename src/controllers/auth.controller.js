@@ -30,9 +30,11 @@ const signUp = async (req, res) => {
             password: hashedPassword,
             emailId,
 
+            role: "user"
+
         })
 
-        user.password = undefined // we dont save in db so password will there in db
+        // user.password = undefined // we dont save in db so password will there in db
 
         // await user.save() if we create user by new User()
 
@@ -40,7 +42,18 @@ const signUp = async (req, res) => {
             .json({
                 message: "User register succesfully",
                 succes: true,
-                data: user
+                data: {
+                    _id: user._id,
+                    firstName: user.firstName,
+                    lastName: user.lastName,
+                    emailId: user.emailId,
+                    role: user.role,
+                    photoUrl: user.photoUrl,
+                    about: user.about,
+                    skills: user.skills,
+                    gender: user.gender,
+                    age: user.age
+                }
             })
 
     } catch (error) {
@@ -65,6 +78,12 @@ const login = async (req, res) => {
         }
 
         const user = await User.findOne({ emailId })
+        if (!user) {
+            return res.status(404).json({
+                message: "User not found",
+                succes: false
+            })
+        }
 
         const isPasswordValid = await user.validatePassword(password)
 
@@ -78,15 +97,6 @@ const login = async (req, res) => {
 
         }
 
-        if (!user) {
-            return res.
-                status(404)
-                .json({
-                    message: "User not found",
-                    succes: false
-                })
-        }
-
         
 
      
@@ -96,6 +106,9 @@ const login = async (req, res) => {
 
            res.cookie("token",token,{
             expires: new Date(Date.now() +  8 * 3600000)
+                , httpOnly: true
+                , secure: process.env.NODE_ENV === "production"
+                , sameSite: "lax"
            })
         }
 
